@@ -8,11 +8,10 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
-	"github.com/nacos-group/nacos-sdk-go/common/constant"
-	"github.com/nacos-group/nacos-sdk-go/vo"
-
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
+	"github.com/nacos-group/nacos-sdk-go/v2/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
 
 var ErrServiceInstanceNameEmpty = errors.New("kratos/nacos: ServiceInstance.Name can not be empty")
@@ -30,42 +29,34 @@ type options struct {
 	kind    string
 }
 
-// Option is nacos option.
 type Option func(o *options)
 
-// WithPrefix with prefix path.
 func WithPrefix(prefix string) Option {
 	return func(o *options) { o.prefix = prefix }
 }
 
-// WithWeight with weight option.
 func WithWeight(weight float64) Option {
 	return func(o *options) { o.weight = weight }
 }
 
-// WithCluster with cluster option.
 func WithCluster(cluster string) Option {
 	return func(o *options) { o.cluster = cluster }
 }
 
-// WithGroup with group option.
 func WithGroup(group string) Option {
 	return func(o *options) { o.group = group }
 }
 
-// WithDefaultKind with default kind option.
 func WithDefaultKind(kind string) Option {
 	return func(o *options) { o.kind = kind }
 }
 
-// Registry is nacos registry.
 type Registry struct {
 	opts options
 	cli  naming_client.INamingClient
 }
 
-// New new a nacos registry.
-func New(cli naming_client.INamingClient, opts ...Option) (r *Registry) {
+func New(cli naming_client.INamingClient, opts ...Option) *Registry {
 	op := options{
 		prefix:  "/microservices",
 		cluster: "DEFAULT",
@@ -82,7 +73,6 @@ func New(cli naming_client.INamingClient, opts ...Option) (r *Registry) {
 	}
 }
 
-// Register the registration.
 func (r *Registry) Register(_ context.Context, si *registry.ServiceInstance) error {
 	if si.Name == "" {
 		return ErrServiceInstanceNameEmpty
@@ -100,21 +90,11 @@ func (r *Registry) Register(_ context.Context, si *registry.ServiceInstance) err
 		if err != nil {
 			return err
 		}
-		var rmd map[string]string
-		if si.Metadata == nil {
-			rmd = map[string]string{
-				"kind":    u.Scheme,
-				"version": si.Version,
-			}
-		} else {
-			rmd = make(map[string]string, len(si.Metadata)+2)
-			for k, v := range si.Metadata {
-				rmd[k] = v
-			}
-			rmd["kind"] = u.Scheme
-			rmd["version"] = si.Version
+		meta := map[string]string{"kind": u.Scheme, "version": si.Version}
+		for k, v := range si.Metadata {
+			meta[k] = v
 		}
-		_, e := r.cli.RegisterInstance(vo.RegisterInstanceParam{
+		_, err = r.cli.RegisterInstance(vo.RegisterInstanceParam{
 			Ip:          host,
 			Port:        uint64(p),
 			ServiceName: si.Name + "." + u.Scheme,
@@ -122,18 +102,17 @@ func (r *Registry) Register(_ context.Context, si *registry.ServiceInstance) err
 			Enable:      true,
 			Healthy:     true,
 			Ephemeral:   true,
-			Metadata:    rmd,
+			Metadata:    meta,
 			ClusterName: r.opts.cluster,
 			GroupName:   r.opts.group,
 		})
-		if e != nil {
-			return fmt.Errorf("RegisterInstance err %v,%v", e, endpoint)
+		if err != nil {
+			return fmt.Errorf("RegisterInstance err: %v, %v", err, endpoint)
 		}
 	}
 	return nil
 }
 
-// Deregister the registration.
 func (r *Registry) Deregister(_ context.Context, service *registry.ServiceInstance) error {
 	for _, endpoint := range service.Endpoints {
 		u, err := url.Parse(endpoint)
@@ -148,26 +127,25 @@ func (r *Registry) Deregister(_ context.Context, service *registry.ServiceInstan
 		if err != nil {
 			return err
 		}
-		if _, err = r.cli.DeregisterInstance(vo.DeregisterInstanceParam{
+		_, err = r.cli.DeregisterInstance(vo.DeregisterInstanceParam{
 			Ip:          host,
 			Port:        uint64(p),
 			ServiceName: service.Name + "." + u.Scheme,
 			GroupName:   r.opts.group,
 			Cluster:     r.opts.cluster,
 			Ephemeral:   true,
-		}); err != nil {
+		})
+		if err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// Watch creates a watcher according to the service name.
 func (r *Registry) Watch(ctx context.Context, serviceName string) (registry.Watcher, error) {
 	return newWatcher(ctx, r.cli, serviceName, r.opts.group, r.opts.kind, []string{r.opts.cluster})
 }
 
-// GetService return the service instances in memory according to the service name.
 func (r *Registry) GetService(_ context.Context, serviceName string) ([]*registry.ServiceInstance, error) {
 	res, err := r.cli.SelectInstances(vo.SelectInstancesParam{
 		ServiceName: serviceName,
@@ -177,7 +155,7 @@ func (r *Registry) GetService(_ context.Context, serviceName string) ([]*registr
 	if err != nil {
 		return nil, err
 	}
-	items := make([]*registry.ServiceInstance, 0, len(res))
+	var items []*registry.ServiceInstance
 	for _, in := range res {
 		kind := r.opts.kind
 		if k, ok := in.Metadata["kind"]; ok {

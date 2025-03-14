@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/nacos-group/nacos-sdk-go/clients/naming_client"
-	"github.com/nacos-group/nacos-sdk-go/model"
-	"github.com/nacos-group/nacos-sdk-go/vo"
-
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/nacos-group/nacos-sdk-go/v2/clients/naming_client"
+	"github.com/nacos-group/nacos-sdk-go/v2/model"
+	"github.com/nacos-group/nacos-sdk-go/v2/vo"
 )
 
 var _ registry.Watcher = (*watcher)(nil)
@@ -35,18 +34,18 @@ func newWatcher(ctx context.Context, cli naming_client.INamingClient, serviceNam
 		watchChan:   make(chan struct{}, 1),
 	}
 	w.ctx, w.cancel = context.WithCancel(ctx)
-
 	w.subscribeParam = &vo.SubscribeParam{
 		ServiceName: serviceName,
 		Clusters:    clusters,
 		GroupName:   groupName,
-		SubscribeCallback: func([]model.SubscribeService, error) {
+		SubscribeCallback: func(services []model.Instance, err error) {
 			select {
 			case w.watchChan <- struct{}{}:
 			default:
 			}
 		},
 	}
+
 	e := w.cli.Subscribe(w.subscribeParam)
 	select {
 	case w.watchChan <- struct{}{}:
