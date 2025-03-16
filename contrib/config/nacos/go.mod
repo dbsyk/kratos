@@ -1,4 +1,4 @@
-module github.com/go-kratos/kratos/contrib/config/nacos/v2
+module github.com/dbsyk/kratos/contrib/config/nacos/v2
 
 go 1.21
 
