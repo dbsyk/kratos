@@ -3,7 +3,7 @@ module github.com/dbsyk/kratos/contrib/config/nacos/v2
 go 1.21
 
 require (
-	github.com/dbsyk/nacos-sdk-go/v2 v2.2.12
+	github.com/dbsyk/nacos-sdk-go/v2 v2.2.14
 	github.com/go-kratos/kratos/v2 v2.8.4
 )
 
