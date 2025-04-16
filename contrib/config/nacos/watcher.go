@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/go-kratos/kratos/v2/config"
-	"github.com/nacos-group/nacos-sdk-go/v2/vo"
+	"github.com/dbsyk/nacos-sdk-go/v2/vo"
 )
 
 type Watcher struct {
