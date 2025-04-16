@@ -3,7 +3,7 @@ module github.com/dbsyk/kratos/contrib/config/nacos/v2
 go 1.21
 
 require (
-	github.com/dbsyk/nacos-sdk-go/v2 v2.2.11
+	github.com/dbsyk/nacos-sdk-go/v2 v2.2.12
 	github.com/go-kratos/kratos/v2 v2.8.4
 )
 
@@ -42,7 +42,6 @@ require (
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/nacos-group/nacos-sdk-go/v2 v2.2.9 // indirect
 	github.com/orcaman/concurrent-map v0.0.0-20210501183033-44dafcb38ecc // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.12.2 // indirect
