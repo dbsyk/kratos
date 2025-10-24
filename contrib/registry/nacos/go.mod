@@ -3,8 +3,8 @@ module github.com/dbsyk/kratos/contrib/registry/nacos/v2
 go 1.21
 
 require (
-	github.com/dbsyk/nacos-sdk-go/v2 v2.2.14
 	github.com/go-kratos/kratos/v2 v2.8.4
+	github.com/nacos-group/nacos-sdk-go/v2 v2.3.4
 )
 
 require (
@@ -31,7 +31,7 @@ require (
 	github.com/aliyun/credentials-go v1.4.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
-	github.com/cespare/xxhash/v2 v2.2.0 // indirect
+	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.5.5 // indirect
 	github.com/deckarep/golang-set v1.7.1 // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -57,9 +57,9 @@ require (
 	golang.org/x/sys v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240102182953-50ed04b92917 // indirect
-	google.golang.org/grpc v1.61.1 // indirect
-	google.golang.org/protobuf v1.33.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
+	google.golang.org/grpc v1.67.3 // indirect
+	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )

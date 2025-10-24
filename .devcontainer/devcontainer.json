@@ -16,7 +16,6 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": {
 		"vcs": "sudo git config --system --add safe.directory ${containerWorkspaceFolder}",
-		"deps": "make init"
 	},
 
 	"waitFor": "postCreateCommand",
