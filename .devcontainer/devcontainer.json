@@ -65,7 +65,8 @@
 				"zxh404.vscode-proto3",
 				"42Crunch.vscode-openapi",
 				"Gruntfuggly.todo-tree",
-				"redhat.vscode-yaml"
+				"redhat.vscode-yaml",
+				"NeonXP.gotools"
 			]
 		}
 	},
